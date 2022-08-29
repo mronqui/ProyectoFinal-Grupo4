@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MACHINE LEARNING API</title>
+    <style>
+      body {
+        background: #b4b4b4;
+      }
+
+      #registration-form {
+        font-family: "Open Sans Condensed", sans-serif;
+        width: 700px;
+        min-width: 250px;
+        margin: 20px auto;
+        position: relative;
+      }
+
+      #registration-form .fieldset {
+        background-color: #d5d5d5;
+
+        border-radius: 3px;
+      }
+
+      #registration-form legend {
+        text-align: center;
+        background: #364351;
+        width: 100%;
+        padding: 30px 0;
+        border-radius: 3px 3px 0 0;
+        color: white;
+        font-size: 2em;
+      }
+
+      .fieldset div {
+        border: 1px solid #2f2f2f;
+        margin: 0 auto;
+        display: block;
+        width: 100%;
+        padding: 30px 20px;
+        box-sizing: border-box;
+        border-radius: 0 0 3px 3px;
+      }
+
+      .placeholder #registration-form label {
+        display: none;
+      }
+
+      .no-placeholder #registration-form label {
+        margin-left: 5px;
+        position: relative;
+        display: block;
+        color: grey;
+        text-shadow: 0 1px white;
+        font-weight: bold;
+      }
+
+      .tip {
+        background-color: #f5f2f2;
+        padding: 5px;
+        border-left: 5px solid #33302c;
+        margin-bottom: 20px;
+      }
+      .tip p {
+        display: inline-block;
+        margin-left: 100px;
+        margin-top: 60px;
+      }
+      .tip img {
+        float: left;
+      }
+      #result {
+        display: flex;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="registration-form">
+      <div class="fieldset">
+        <legend>OCR on Invoices images</legend>
+        <div>
+          <label for="files">Select multiple images</label>
+          <input
+            id="myInput"
+            type="file"
+            multiple="multiple"
+            accept="image/jpeg, image/png, image/jpg"
+          />
+          <button type="click" id="btn">Enviar</button>
+          <output id="result"></output>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    document.querySelector("#myInput").addEventListener("change", (e) => {
+      if (window.File && window.FileReader && window.FileList && window.Blob) {
+        const files = e.target.files;
+        const output = document.querySelector("#result");
+        output.innerHTML = "";
+        for (let i = 0; i < files.length; i++) {
+          if (!files[i].type.match("image")) continue;
+          const picReader = new FileReader();
+          picReader.addEventListener("load", function (event) {
+            const picFile = event.target;
+            const div = document.createElement("div");
+            div.classList.add("tip");
+            div.classList.add("el-" + i);
+            div.innerHTML = `<img class="thumbnail" src="${picFile.result}" title="${picFile.name}" alt="${picFile.name}" width="200" height="200"/>`;
+            output.appendChild(div);
+          });
+          picReader.readAsDataURL(files[i]);
+        }
+      } else {
+        alert("Your browser does not support File API");
+      }
+    });
+  </script>
+  <script>
+    //CAPTURAMOS LA IMAGEN SELECCIONADA
+    const input = document.getElementById("myInput");
+    const btn = document.getElementById("btn");
+    var filenames = [];
+    var ficheros = null;
+    input.addEventListener("change", (e) => {
+      ficheros = e.target.files;
+      for (const iterator of e.target.files) {
+        filenames.push(iterator.filename);
+      }
+    });
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      // create formData object
+      const formdata = new FormData();
+      filenames.forEach((filename, index) => {
+        formdata.append("files", ficheros[index], filename);
+      });
+      var requestOptions = {
+        method: "POST",
+        body: formdata,
+        redirect: "follow",
+      };
+
+      const url = "{{ url_for('predict')}}";
+
+      fetch(url, requestOptions)
+        .then((result) => result.json())
+        .then((result) => {
+          console.log("results", result);
+          result.forEach((element, index) => {
+            const d = document.getElementsByClassName("tip el-" + index);
+            const el = document.createElement("p");
+            el.innerHTML =
+              "Bruto: " +
+              element.bruto +
+              "<br> Tara: " +
+              element.tara +
+              "<br> Neto: " +
+              element.neto;
+            d[0].appendChild(el);
+            //d.innerHTML += el
+          });
+        })
+        .catch((error) => console.log("error", error));
+    });
+  </script>
+</html>
