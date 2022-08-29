@@ -2,6 +2,7 @@ import cv2
 import pytesseract
 import numpy as np
 import re
+pytesseract.pytesseract.tesseract_cmd = '/app/.apt/usr/bin/tesseract'
 
 def calculate_orientation(img):
   # Convert image to grayscale
