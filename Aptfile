@@ -1,7 +1,7 @@
 tesseract-ocr
 tesseract-ocr-spa
 libgl1
-libsm6
-libxrender1
-libfontconfig1
-libice6
+#libsm6
+#libxrender1
+#libfontconfig1
+#libice6
