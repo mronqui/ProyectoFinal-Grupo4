@@ -1,3 +1,6 @@
 tesseract-ocr
 tesseract-ocr-spa
-python3-opencv
+libsm6
+libxrender1
+libfontconfig1
+libice6
