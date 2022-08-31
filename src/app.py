@@ -32,9 +32,9 @@ def predict():
             if output[0] < 0.5:
                 transformed = transform_image(img)
                 text = process_ocr(transformed)
-                predictions.append({'bruto': extract_bruto_from_text(text), 'tara': extract_tara_from_text(text), 'neto': extract_neto_from_text(text)})
+                predictions.append({'bruto': extract_bruto_from_text(text), 'tara': extract_tara_from_text(text), 'neto': extract_neto_from_text(text), 'clase' : 'Remito_OK'})
             else:
-                predictions.append({'bruto': 'Not found', 'tara': 'Not found', 'neto': 'Not found'})
+                predictions.append({'bruto': 'Not found', 'tara': 'Not found', 'neto': 'Not found', 'clase' : 'Remitos_Varios'})
         except Exception as e:
                 print('Error:', e)
     
