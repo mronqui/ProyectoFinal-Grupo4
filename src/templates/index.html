@@ -80,7 +80,7 @@
   <body>
     <div id="registration-form">
       <div class="fieldset">
-        <legend>OCR on Invoices images</legend>
+        <legend>OCR on Documentacion images</legend>
         <div>
           <label for="files">Select multiple images</label>
           <input
@@ -153,13 +153,22 @@
           result.forEach((element, index) => {
             const d = document.getElementsByClassName("tip el-" + index);
             const el = document.createElement("p");
-            el.innerHTML =
+            if (element.clase == 'Remito_OK'){
+              el.innerHTML =
+              "Tipo Doc.: " +
+               element.clase +
               "Bruto: " +
               element.bruto +
               "<br> Tara: " +
               element.tara +
               "<br> Neto: " +
               element.neto;
+            }
+            else{
+            el.innerHTML =
+              "Tipo Doc.: " +
+               element.clase ;
+              }
             d[0].appendChild(el);
             //d.innerHTML += el
           });
